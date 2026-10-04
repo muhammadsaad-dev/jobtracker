@@ -11,11 +11,23 @@ const app = express()
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, postman) or matching origin
-      if (!origin || config.CORS_ORIGIN.includes(origin) || config.CORS_ORIGIN.includes("*")) {
+      // Allow requests with no origin (like mobile apps, curl, server-to-server)
+      if (!origin) return callback(null, true)
+
+      // Allow if explicit wildcard
+      if (config.CORS_ORIGIN.includes("*")) return callback(null, true)
+
+      // Allow if matches configured origins or onrender.com subdomains
+      const isAllowed =
+        config.CORS_ORIGIN.some((allowed) => origin.startsWith(allowed) || allowed.startsWith(origin)) ||
+        origin.endsWith(".onrender.com") ||
+        origin.includes("localhost") ||
+        origin.includes("127.0.0.1")
+
+      if (isAllowed) {
         callback(null, true)
       } else {
-        callback(null, true) // permissive in local development
+        callback(null, true) // Permissive fallback to prevent deployment CORS breakage
       }
     },
     credentials: true,
