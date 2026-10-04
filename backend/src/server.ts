@@ -1,12 +1,16 @@
 import mongoose from "mongoose"
 import app from "./app"
 import { config } from "./config/env"
+import { seedDemoData } from "./utils/seedDemoData"
 
 const startServer = async () => {
   try {
     console.log("Connecting to MongoDB at:", config.MONGO_URL)
     await mongoose.connect(config.MONGO_URL)
     console.log("✅ Successfully connected to MongoDB database.")
+
+    // Auto-seed default demo account if empty
+    await seedDemoData()
 
     const server = app.listen(config.PORT, () => {
       console.log(`🚀 Server running in ${config.NODE_ENV} mode on http://localhost:${config.PORT}/`)
