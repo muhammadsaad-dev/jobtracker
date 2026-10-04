@@ -40,4 +40,3 @@ services:
           type: web
           name: jobtracker-api
           property: host
-        value: https://${jobtracker-api.host}/api

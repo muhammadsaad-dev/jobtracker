@@ -1,6 +1,19 @@
 import type { Job, JobStats, User } from "../types"
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+const getApiBaseUrl = (): string => {
+  const raw = import.meta.env.VITE_API_URL
+  if (!raw) return "http://localhost:5000/api"
+  let url = raw.trim()
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    url = `https://${url}`
+  }
+  if (!url.endsWith("/api")) {
+    url = `${url.replace(/\/+$/, "")}/api`
+  }
+  return url
+}
+
+const API_BASE_URL = getApiBaseUrl()
 
 class ApiClient {
   private getToken(): string | null {
