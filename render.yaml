@@ -23,13 +23,11 @@ services:
         value: "*"
 
   # 2. Frontend Static Site (React Vite SPA)
-  - type: web
+  - type: static_site
     name: jobtracker-web
-    runtime: static
-    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    publishDir: dist
     routes:
       - type: rewrite
         source: /*
